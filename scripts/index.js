@@ -26,14 +26,27 @@ function printJoke(str) {
     console.log(str);
 }
 // 4. Create DOM elements
-function rendersJokeToPage(jokeString) {
+function rendersJokeToContainer(jokeString) {
+    let jokeContainer = document.querySelector(".js-container")
+    jokeContainer.textContent = "";
     const h1 = document.createElement('h1');
     h1.textContent = jokeString;
-    document.body.appendChild(h1);
+    jokeContainer.appendChild(h1);
 }
 
+function makeContainer() {
+    jokeContainer = document.createElement("div");
+    jokeContainer.className = "js-container";
+    document.body.appendChild(jokeContainer)
+}
 
-
+function makeJokeButton() {
+    let jokeButton = document.createElement("button");
+    jokeButton.className = "js-jokeButton";
+    jokeButton.textContent = "New Joke";
+    document.body.appendChild(jokeButton);
+    jokeButton.addEventListener("click", fetchJoke);
+}
 
 function fetchJoke() {
     fetch(jokeServerAddress)
@@ -41,5 +54,13 @@ function fetchJoke() {
         .then(r => r.json()) // skinny-jeans version
         .then(extractJoke)
         // .then(printJoke)
-        .then(rendersJokeToPage)
+        .then(rendersJokeToContainer)
 }
+
+function main() {
+    makeContainer();
+    fetchJoke();
+    makeJokeButton();
+}
+
+main();
