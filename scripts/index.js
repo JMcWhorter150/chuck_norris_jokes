@@ -28,10 +28,15 @@ function printJoke(str) {
 // 4. Create DOM elements
 function rendersJokeToContainer(jokeString) {
     let jokeContainer = document.querySelector(".js-container")
-    jokeContainer.textContent = "";
+    // clearJokeContainer();
     const h1 = document.createElement('h1');
     h1.textContent = jokeString;
     jokeContainer.appendChild(h1);
+}
+
+function clearJokeContainer() {
+    let jokeContainer = document.querySelector(".js-container")
+    jokeContainer.textContent = "";
 }
 
 function makeContainer() {
@@ -45,7 +50,25 @@ function makeJokeButton() {
     jokeButton.className = "js-jokeButton";
     jokeButton.textContent = "New Joke";
     document.body.appendChild(jokeButton);
-    jokeButton.addEventListener("click", fetchJoke);
+    jokeButton.addEventListener("click", whenJokeButtonClicked);
+}
+
+function makeMultipleJokeButton() {
+    let jokeButton = document.createElement("button");
+    jokeButton.className = "js-multipleJokeButton";
+    jokeButton.textContent = "5 New Jokes";
+    document.body.appendChild(jokeButton);
+    jokeButton.addEventListener("click", whenMultipleJokeButtonClicked);
+}
+
+function whenJokeButtonClicked() {
+    clearJokeContainer();
+    fetchJoke();
+}
+
+function whenMultipleJokeButtonClicked() {
+    clearJokeContainer();
+    fetchMultipleJokes();
 }
 
 function fetchJoke() {
@@ -53,14 +76,23 @@ function fetchJoke() {
         // .then(convertToJson)
         .then(r => r.json()) // skinny-jeans version
         .then(extractJoke)
-        // .then(printJoke)
         .then(rendersJokeToContainer)
+}
+
+function fetchMultipleJokes() {
+    fetchJoke();
+    fetchJoke();
+    fetchJoke();
+    fetchJoke();
+    fetchJoke();
 }
 
 function main() {
     makeContainer();
     fetchJoke();
+    // fetchMultipleJokes();
     makeJokeButton();
+    makeMultipleJokeButton();
 }
 
 main();
