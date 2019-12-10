@@ -1,5 +1,5 @@
 // 1. go get that data
-const jokeServerAddress = `https://api.chucknorris.io/jokes/random`;
+
 
 
 // 2. Wait for it (a stream of data) to finish downloading and then convert it to a usable format.
@@ -72,6 +72,12 @@ function whenMultipleJokeButtonClicked() {
 }
 
 function fetchJoke() {
+    let jokeServerAddress = `https://api.chucknorris.io/jokes/random`;
+    let category = document.querySelector('h2');
+    if (!!category) {
+        let categoryName = category.textContent;
+        jokeServerAddress = `https://api.chucknorris.io/jokes/random?category=${categoryName}`;
+    }
     fetch(jokeServerAddress)
         // .then(convertToJson)
         .then(r => r.json()) // skinny-jeans version
@@ -87,12 +93,65 @@ function fetchMultipleJokes() {
     fetchJoke();
 }
 
+function displayCategoryList() {
+    createUL();
+    let categoryAddress = "https://api.chucknorris.io/jokes/categories";
+    fetch(categoryAddress)
+        .then(convertToJson)
+        .then(arr => arr.map(convertStringToLi))
+        .then(arr => arr.map(addListListener))
+        .then(arr => arr.map(appendToUL))
+}
+
+function createUL() {
+    let ul = document.createElement("ul");
+    document.body.appendChild(ul);
+}
+
+function convertStringToLi(string) {
+    let li = document.createElement("li");
+    li.textContent = string;
+    return li;
+}
+
+function appendToUL(li) {
+    let ul = document.querySelector("ul");
+    ul.appendChild(li);
+}
+
+function addListListener(element) {
+    element.addEventListener("click", categoryClick)
+    return element
+}
+
+function categoryClick(event) {
+    clearH2();
+    clearJokeContainer();
+    let categoryName = event.target.textContent;
+    let ul = document.querySelector("ul");
+    let h2 = document.createElement("h2");
+    h2.textContent = categoryName;
+    document.body.insertBefore(h2, ul);
+}
+
+function clearH2() {
+    let h2 = document.querySelector('h2');
+    // console.log(!!h2);
+    if(h2) {
+        document.body.removeChild(h2);
+    }
+}
+
+
 function main() {
+    displayCategoryList();
     makeContainer();
-    fetchJoke();
+    // fetchJoke();
     // fetchMultipleJokes();
     makeJokeButton();
     makeMultipleJokeButton();
+
 }
 
 main();
+
